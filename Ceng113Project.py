@@ -367,9 +367,11 @@ def main():
     display_menu()
     selection = ask_menu_selection()
     if selection == 1: ## Department display events should be here. 
-        display_employees(1)
+        department = select_department()
+        display_employees(department)
     elif selection == 2: ## Task system assignation events should be here.
-        pass
+        department = select_department()
+        assign_weekly_tasks(department)
     elif selection == 3: ## Meeting report generation events should be here.
         pass
     elif selection == 4: ## Meeting report display events should be here.
@@ -377,5 +379,7 @@ def main():
     elif selection == 5: ## Meeting report review events should be here.
         pass
     elif selection == 6: ## Task summary display events should be here.
-        pass
+        department = select_department()
+        display_task_summary(department)
+
 main()
