@@ -252,7 +252,98 @@ def authenticate_manager(manager_id, password, department): # Authenticates the 
         while line != "":
             rep_file.write(line)
             line = temp_file.readline()
+def is_file_created(file):
+    try:
+        with open(file, 'r') as checkfile:
+            return True
+    except FileNotFoundError:
+        return False
+def assign_weekly_tasks(department):
+    task_file = f"tasks_{department}.txt"
+    rev_file = f"review_{department}.txt"
+    if is_file_created(task_file):
+        with open(rev_file, 'r') as review_file:
+            status = review_file.readline().rstrip()
+            while True:
+                if status == "Rejected":
+                    selection = input("WARNING! CONTINUING THIS OPERATION WILL OVERWRITE EXISTING TASK DATA. Would you like to continue? [y/n]: ")
+                    if selection == "y":
+                        with open(task_file, 'w') as file:
+                            file.write()
+                            break
+                    elif selection == "n": return
+                    else:
+                        print("Please enter either 'y' or 'n'.")
+                        continue
+                else: return
 
+
+    department_name = get_department_name(department)
+    with open('employees.txt', 'r') as emp_file:
+        for i in range(50):
+            id = emp_file.readline().rstrip()
+            emp_name = emp_file.readline().rstrip()
+            emp_surname = emp_file.readline().rstrip()
+            emp_role = emp_file.readline().rstrip()
+            emp_dept = emp_file.readline().rstrip()
+            emp_file.readline()
+            emp_file.readline()
+            if emp_dept == department_name:
+                print(f"""
+Assign task for 
+ID: {id}
+Name: {emp_name} {emp_surname}
+Role: {emp_role}                                         
+""")
+                with open(task_file, 'a+') as file:
+                    while True:
+                        task_desc = input("Please describe the task you'd like to assign: ")
+                        if task_desc == "":
+                            print("Please provide a description of the task.")
+                            continue
+                        try:
+                            estimated_time = int(input("Please enter the estimated time for this task (1-40): "))
+                            if estimated_time > 40 or estimated_time < 1:
+                                print("Please provide a valid estimated time for this task.")
+                                continue
+                            else:
+                                file.write(f"{id}\n")
+                                file.write(task_desc + "\n")
+                                file.write(f"{estimated_time}\n")
+                                file.write("\n")
+                                break
+                        except ValueError:
+                            print("Please provide a valid estimated time for this task.")
+                            continue
+def display_task_summary(department):
+    task_file = f"tasks_{department}.txt"
+    counter = 0
+    employee_count = 0
+    tasks_count = 0
+    total_hours = 0
+    if is_file_created(task_file):
+        with open(task_file, 'r') as file:
+            for line in file:
+                counter += 1
+                if counter % 4 == 1:
+                    employee_count += 1
+                elif counter % 4 == 2:
+                    tasks_count += 1
+                elif counter % 4 == 3:
+                    total_hours += int(line)
+            average = total_hours / tasks_count
+    else:
+        employee_count = 0
+        tasks_count = 0
+        total_hours = 0
+        average = "N/A"
+
+    print(f"""
+Number of employees: {employee_count}
+Number of assigned tasks: {tasks_count}
+Total estimated hours: {total_hours}
+Average hours per assigned task: {average}
+""")
 def main():
     display_menu()
     selection = ask_menu_selection()
