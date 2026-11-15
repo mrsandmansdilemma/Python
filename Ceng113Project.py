@@ -344,11 +344,30 @@ Number of assigned tasks: {tasks_count}
 Total estimated hours: {total_hours}
 Average hours per assigned task: {average}
 """)
+
+def display_employees(department):
+    department_name = get_department_name(department)
+    print(f"Employees in {department_name} Department:")
+    print("ID\tName\t\tRole")
+    print("-------------------------------------")
+    with open('employees.txt', 'r') as emp_file:
+        for i in range(50):
+            id = emp_file.readline().rstrip()
+            emp_name = emp_file.readline().rstrip()
+            emp_surname = emp_file.readline().rstrip()
+            emp_role = emp_file.readline().rstrip()
+            emp_dept = emp_file.readline().rstrip()
+            emp_rank = emp_file.readline().rstrip()
+            emp_file.readline()  # Skip the empty line
+            if emp_dept == department_name:
+                print(f"{id}\t{emp_name} {emp_surname}\t{emp_role}\t{emp_rank}")
+
+
 def main():
     display_menu()
     selection = ask_menu_selection()
     if selection == 1: ## Department display events should be here. 
-        pass
+        display_employees(1)
     elif selection == 2: ## Task system assignation events should be here.
         pass
     elif selection == 3: ## Meeting report generation events should be here.
@@ -359,3 +378,4 @@ def main():
         pass
     elif selection == 6: ## Task summary display events should be here.
         pass
+main()
