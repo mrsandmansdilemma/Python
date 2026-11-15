@@ -120,7 +120,7 @@ def authenticate_manager(manager_id, password, department): # Authenticates the 
     print("Invalid credentials. Please try again.")
     return False
     
-    def review_meeting_report(department): # Handles login attempts, decision input, and report updates
+def review_meeting_report(department): # Handles login attempts, decision input, and report updates
     report_filename = f"meeting_report_{department}.txt" 
     review_filename = f"review_{department}.txt" 
 
