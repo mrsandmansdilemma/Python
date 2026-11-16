@@ -21,10 +21,8 @@ def ask_menu_selection():
             return selection
         else:
             print("INVALID CHOICE. PLEASE ENTER A NUMBER BETWEEN 0 AND 6.") 
-            ask_menu_selection()
     except ValueError:
         print("INVALID CHOICE. PLEASE ENTER A NUMBER.")
-        ask_menu_selection()
 
 def select_department(): # The second menu function where the user decides the department.
     print("""
@@ -82,7 +80,13 @@ def generate_meeting_report(department):
     task_file = f"tasks_{department}.txt"
     review_file = f"review_{department}.txt"
     report_file = f"meeting_report_{department}.txt"
+    if not is_file_created(task_file):
+        print("No defined tasks yet.")
+        return
     if is_file_created(review_file):
+        meeting_note = ""
+        meeting_date = ""
+
         with open(review_file, 'r') as file:
             for line in file:
                 if line == "Pending Approval\n" or line == "Approved\n":
@@ -127,11 +131,11 @@ def generate_meeting_report(department):
                         rep_file.write(f"Employee ID: {id}\n")
                         rep_file.write(f"Employee Name: {get_employee_name(id)}\n")
                         rep_file.write(f"Employee Title: {get_employee_title(id)}\n")
-                    if counter % 4 == 2: file.write(f"Task: {line.rstrip()}\n")
+                    if counter % 4 == 2: rep_file.write(f"Task: {line.rstrip()}\n")
                     if counter % 4 == 3:
                         rep_file.write(f"Estimated Time: {line.rstrip()}\n")
                         time_count += int(line.rstrip())
-                rep_file.write(f"Number of Employees: {employee_count} hrs\n")
+                rep_file.write(f"Number of Employees: {employee_count}\n")
                 rep_file.write(f"Total Estimated Time: {time_count} hrs\n")
                 rep_file.write(f"Average Time: {(time_count / employee_count):.2f} hrs\n")
                 rep_file.write("Reviewer ID: -\n")
@@ -139,8 +143,18 @@ def generate_meeting_report(department):
                 rep_file.write(f"Reviewer Comment: -\n")
 
     else:
-        meeting_date = input("Please enter your meeting date: ")
-        meeting_note = input("Please enter your meeting note: ")
+        while True:
+            meeting_date = input("Please enter your meeting date: ")
+            if meeting_date == "":
+                print("Please enter your meeting date.")
+                continue
+            else: break
+        while True:
+            meeting_note = input("Please enter your meeting note: ")
+            if meeting_note == "":
+                print("Please enter your meeting note.")
+                continue
+            else: break
         with open(review_file, 'w') as file:
             file.write("Pending Approval\n")
             file.write("-\n")
@@ -165,17 +179,17 @@ def generate_meeting_report(department):
                         rep_file.write(f"Employee ID: {id}\n")
                         rep_file.write(f"Employee Name: {get_employee_name(id)}\n")
                         rep_file.write(f"Employee Title: {get_employee_title(id)}\n")
-                    if counter % 4 == 2: file.write(f"Task: {line.rstrip()}\n")
+                    if counter % 4 == 2: rep_file.write(f"Task: {line.rstrip()}\n")
                     if counter % 4 == 3:
                         rep_file.write(f"Estimated Time: {line.rstrip()}\n")
                         time_count += int(line.rstrip())
-                rep_file.write(f"Number of Employees: {employee_count} hrs\n")
+                rep_file.write(f"Number of Employees: {employee_count}\n")
                 rep_file.write(f"Total Estimated Time: {time_count} hrs\n")
                 rep_file.write(f"Average Time: {(time_count / employee_count):.2f} hrs\n")
                 rep_file.write("Reviewer ID: -\n")
                 rep_file.write(f"Reviewer Name: -\n")
                 rep_file.write(f"Reviewer Comment: -\n")
-       
+              
 def display_meeting_report(department): # Displays the meeting report for the selected department.
     filename = f"meeting_report_{department}.txt" # Constructs the target report filename using the department number.
     try: 
@@ -222,9 +236,10 @@ def authenticate_manager(manager_id, password, department): # Authenticates the 
             emp_surname = emp_file.readline().rstrip()
             emp_role = emp_file.readline().rstrip()
             emp_dept = emp_file.readline().rstrip()
+            emp_rank = emp_file.readline().rstrip()
             emp_file.readline() # Skip the empty line (remove if employees.txt has no empty lines)
 
-            if file_emp_id == manager_id and emp_role == "Manager" and emp_dept == target_department:
+            if file_emp_id == manager_id and emp_rank == "Manager" and emp_dept == target_department:
                 return True
 
             file_emp_id = emp_file.readline()
@@ -457,11 +472,10 @@ Total estimated hours: {total_hours}
 Average hours per assigned task: {average}
 """)
 
+
 def display_employees(department):
     department_name = get_department_name(department)
     print(f"Employees in {department_name} Department:")
-    print("ID\tName\t\tRole")
-    print("-------------------------------------")
     with open('employees.txt', 'r') as emp_file:
         for i in range(50):
             id = emp_file.readline().rstrip()
@@ -472,15 +486,23 @@ def display_employees(department):
             emp_rank = emp_file.readline().rstrip()
             emp_file.readline()  # Skip the empty line
             if emp_dept == department_name:
-                print(f"{id}\t{emp_name} {emp_surname}\t{emp_role}\t{emp_rank}")
+                print(f"""
+Employee ID: {id}
+Employee Name: {emp_name} {emp_surname}
+Employee Role: {emp_role}
+Employee Rank: {emp_rank}
 
+""")
 
 def main():
     while True:
-        display_menu()
-        selection = ask_menu_selection()
-        
-        if selection == 0 or selection is None:
+        while True:
+            display_menu()
+            selection = ask_menu_selection()
+            if selection == None:
+                continue
+            else: break
+        if selection == 0:
             print("Exiting the program. Goodbye!")
             break
         elif selection == 1: ## Department display events should be here. 
