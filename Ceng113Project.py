@@ -364,22 +364,29 @@ def display_employees(department):
 
 
 def main():
-    display_menu()
-    selection = ask_menu_selection()
-    if selection == 1: ## Department display events should be here. 
-        department = select_department()
-        display_employees(department)
-    elif selection == 2: ## Task system assignation events should be here.
-        department = select_department()
-        assign_weekly_tasks(department)
-    elif selection == 3: ## Meeting report generation events should be here.
-        pass
-    elif selection == 4: ## Meeting report display events should be here.
-        pass
-    elif selection == 5: ## Meeting report review events should be here.
-        pass
-    elif selection == 6: ## Task summary display events should be here.
-        department = select_department()
-        display_task_summary(department)
-
+    while True: # Programın 0 seçilene kadar menüye dönmesini sağlar
+        display_menu()
+        selection = ask_menu_selection()
+        
+        if selection == 0 or selection is None:
+            print("Exiting the program. Goodbye!")
+            break
+        elif selection == 1: ## Department display events should be here. 
+            department = select_department()
+            display_employees(department)
+        elif selection == 2: ## Task system assignation events should be here.
+            department = select_department()
+            assign_weekly_tasks(department)
+        elif selection == 3: ## Meeting report generation events should be here.
+            department = select_department()
+            # generate_meeting_report(department) # 3. kısım eklendiğinde burası açılacak
+        elif selection == 4: ## Meeting report display events should be here.
+            department = select_department()
+            display_meeting_report(department)
+        elif selection == 5: ## Meeting report review events should be here.
+            department = select_department()
+            review_meeting_report(department)
+        elif selection == 6: ## Task summary display events should be here.
+            department = select_department()
+            display_task_summary(department)
 main()
