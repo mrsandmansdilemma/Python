@@ -3,7 +3,7 @@ def display_menu(): # The main function that displays menu and handles selection
 ==========================================
  WELCOME, WHAT WOULD YOU LIKE TO DO TODAY?
 ==========================================
-1- Display department employees
+1- Display employees list
 2- Assign weekly tasks 
 3- Generate meeting report 
 4- Display meeting report
@@ -396,7 +396,7 @@ def assign_weekly_tasks(department):
                     selection = input("WARNING! CONTINUING THIS OPERATION WILL OVERWRITE EXISTING TASK DATA. Would you like to continue? [y/n]: ")
                     if selection == "y":
                         with open(task_file, 'w') as file:
-                            file.write()
+                            file.write("")
                             break
                     elif selection == "n": return
                     else:
@@ -496,8 +496,8 @@ Employee Rank: {emp_rank}
 
 def main():
     while True:
+        display_menu()
         while True:
-            display_menu()
             selection = ask_menu_selection()
             if selection == None:
                 continue
