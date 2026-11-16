@@ -63,7 +63,119 @@ def get_department_name(department): # This function retrieves the name of the d
         return "IT Operations"
     elif department == 6:
         return "Human Resources"
+def get_employee_title(id):
+    with open("employees.txt") as file:
+        for line in file:
+            if line.rstrip() == id:
+                file.readline()
+                file.readline()
+                title = file.readline().rstrip()
+                return title
+def get_employee_name(id):
+    with open("employees.txt") as file:
+        for line in file:
+            if line.rstrip() == id:
+                name = file.readline().rstrip()
+                surname = file.readline().rstrip()
+                return (name + " " + surname)
+def generate_meeting_report(department):
+    task_file = f"tasks_{department}.txt"
+    review_file = f"review_{department}.txt"
+    report_file = f"meeting_report_{department}.txt"
+    if is_file_created(review_file):
+        with open(review_file, 'r') as file:
+            for line in file:
+                if line == "Pending Approval\n" or line == "Approved\n":
+                    print("This meeting report is already in progress.")
+                    return
+                elif line == "Rejected\n":
+                    while True:
+                        selection = input("WARNING! CONTINUING WILL OVERWRITE EXISTING REPORT DATA. Would you like to continue? [y/n]: ")
+                        if selection == "y": break
+                        elif selection == "n": return
+                        else:
+                            print("Please enter either 'y' or 'n'.")
+                            continue
+        with open(review_file, 'r') as read_file:
+            for i in range(4):
+                read_file.readline()
+            meeting_date = read_file.readline().rstrip()
+            meeeting_note = read_file.readline().rstrip()
+
+        with open(review_file, 'w') as file:
+            file.write("Pending Approval\n")
+            file.write("-\n")
+            file.write("-\n")
+            file.write("-\n")
+            file.write(meeting_date+"\n")
+            file.write(meeeting_note+"\n")
         
+        with open(report_file, 'w') as rep_file:
+            rep_file.write(f"Department: {get_department_name(department)}\n")
+            rep_file.write(f"Meeting Date: {meeting_date}\n")
+            rep_file.write(f"Meeting Note: {meeting_note}\n")
+            rep_file.write("Status: Pending Approval\n")
+            with open(task_file, 'r') as tasks:
+                counter = 0
+                employee_count = 0
+                time_count = 0
+                for line in tasks:
+                    counter +=1
+                    if counter % 4 == 1:
+                        employee_count += 1
+                        id = line.rstrip()
+                        rep_file.write(f"Employee ID: {id}\n")
+                        rep_file.write(f"Employee Name: {get_employee_name(id)}\n")
+                        rep_file.write(f"Employee Title: {get_employee_title(id)}\n")
+                    if counter % 4 == 2: file.write(f"Task: {line.rstrip()}\n")
+                    if counter % 4 == 3:
+                        rep_file.write(f"Estimated Time: {line.rstrip()}\n")
+                        time_count += int(line.rstrip())
+                rep_file.write(f"Number of Employees: {employee_count} hrs\n")
+                rep_file.write(f"Total Estimated Time: {time_count} hrs\n")
+                rep_file.write(f"Average Time: {(time_count / employee_count):.2f} hrs\n")
+                rep_file.write("Reviewer ID: -\n")
+                rep_file.write(f"Reviewer Name: -\n")
+                rep_file.write(f"Reviewer Comment: -\n")
+
+    else:
+        meeting_date = input("Please enter your meeting date: ")
+        meeting_note = input("Please enter your meeting note: ")
+        with open(review_file, 'w') as file:
+            file.write("Pending Approval\n")
+            file.write("-\n")
+            file.write("-\n")
+            file.write("-\n")
+            file.write(meeting_date+"\n")
+            file.write(meeting_note+"\n")
+        with open(report_file, 'w') as rep_file:
+            rep_file.write(f"Department: {get_department_name(department)}\n")
+            rep_file.write(f"Meeting Date: {meeting_date}\n")
+            rep_file.write(f"Meeting Note: {meeting_note}\n")
+            rep_file.write("Status: Pending Approval\n")
+            with open(task_file, 'r') as tasks:
+                counter = 0
+                employee_count = 0
+                time_count = 0
+                for line in tasks:
+                    counter +=1
+                    if counter % 4 == 1:
+                        employee_count += 1
+                        id = line.rstrip()
+                        rep_file.write(f"Employee ID: {id}\n")
+                        rep_file.write(f"Employee Name: {get_employee_name(id)}\n")
+                        rep_file.write(f"Employee Title: {get_employee_title(id)}\n")
+                    if counter % 4 == 2: file.write(f"Task: {line.rstrip()}\n")
+                    if counter % 4 == 3:
+                        rep_file.write(f"Estimated Time: {line.rstrip()}\n")
+                        time_count += int(line.rstrip())
+                rep_file.write(f"Number of Employees: {employee_count} hrs\n")
+                rep_file.write(f"Total Estimated Time: {time_count} hrs\n")
+                rep_file.write(f"Average Time: {(time_count / employee_count):.2f} hrs\n")
+                rep_file.write("Reviewer ID: -\n")
+                rep_file.write(f"Reviewer Name: -\n")
+                rep_file.write(f"Reviewer Comment: -\n")
+       
 def display_meeting_report(department): # Displays the meeting report for the selected department.
     filename = f"meeting_report_{department}.txt" # Constructs the target report filename using the department number.
     try: 
@@ -379,7 +491,7 @@ def main():
             assign_weekly_tasks(department)
         elif selection == 3: ## Meeting report generation events should be here.
             department = select_department()
-            # generate_meeting_report(department) # 3. kısım eklendiğinde burası açılacak
+            generate_meeting_report(department)
         elif selection == 4: ## Meeting report display events should be here.
             department = select_department()
             display_meeting_report(department)
