@@ -364,7 +364,7 @@ def display_employees(department):
 
 
 def main():
-    while True: # Programın 0 seçilene kadar menüye dönmesini sağlar
+    while True:
         display_menu()
         selection = ask_menu_selection()
         
